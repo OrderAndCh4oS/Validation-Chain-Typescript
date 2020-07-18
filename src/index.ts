@@ -101,6 +101,7 @@ function validationChain(...initialValidationChecks: IValidationCheck[]): IValid
 const invalidObj: any = {
     aStringTwo: 14214,
     aStringThree: 'asfasfsasaf',
+    aStringFour: 'asfas',
     aNumber: 12345
 }
 
@@ -126,6 +127,10 @@ const validateObj: IValidateParams = {
         minLength: 3,
         maxLength: 5,
     },
+    aStringFour: {
+        required: false,
+        isType: 'string'
+    },
     aNumber: {
         required: true,
         isType: 'number',
@@ -133,6 +138,7 @@ const validateObj: IValidateParams = {
         maxValue: 100
     },
 }
+
 let errors = validationChain(required, isType, minValue, maxValue, minLength, maxLength)
     .validate(invalidObj, validateObj);
 
