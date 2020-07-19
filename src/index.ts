@@ -1,64 +1,16 @@
-export interface IValidationChain {
-    add: (this: IValidationChain, validationCheck: IValidationCheck) => IValidationChain;
-    validate: (params: any, validateParams: IValidateParams) => IValidationErrorMessage[]
-}
-
-export interface IValidationChecks {
-    [property: string]: IValidationCheck
-}
-
-export interface IValidationCheck {
-    (params: any, property: string, validation: IValidations, errors: IValidationErrorMessage[]): void
-}
-
-export interface IValidationErrorMessage {
-    property: string,
-    error: string
-}
-
-export interface IValidateParams {
-    [property: string]: IValidations
-}
-
-export interface IValidations {
-    [property: string]: any
-}
-
-export const required: IValidationCheck = (params, property, validations, errors) => {
-    if (validations.required && !params.hasOwnProperty(property)) {
-        errors.push({property, error: 'Is required'})
-    }
-}
-
-export const minValue: IValidationCheck = (params, property, validations, errors) => {
-    if (params.hasOwnProperty(property) && params[property] < validations.minValue) {
-        errors.push({property, error: 'Is less than min value'})
-    }
-}
-
-export const maxValue: IValidationCheck = (params, property, validations, errors) => {
-    if (params.hasOwnProperty(property) && params[property] > validations.maxValue) {
-        errors.push({property, error: 'Is greater than max value'})
-    }
-}
-
-export const minLength: IValidationCheck = (params, property, validations, errors) => {
-    if (params.hasOwnProperty(property) && params[property].length < validations.minLength) {
-        errors.push({property, error: 'Is too short'})
-    }
-}
-
-export const maxLength: IValidationCheck = (params, property, validations, errors) => {
-    if (params.hasOwnProperty(property) && params[property].length > validations.maxLength) {
-        errors.push({property, error: 'Is too long'})
-    }
-}
-
-export const isType: IValidationCheck = (params, property, validations, errors) => {
-    if (params.hasOwnProperty(property) && typeof params[property] !== validations.isType) {
-        errors.push({property, error: `Is wrong type ${typeof params[property]} should be ${validations.isType}`})
-    }
-}
+import {
+    IValidateParams,
+    IValidationChain,
+    IValidationCheck,
+    IValidationChecks,
+    IValidationErrorMessage
+} from "./interface";
+import required from "./validations/required";
+import isType from "./validations/is-type";
+import minValue from "./validations/min-value";
+import maxValue from "./validations/max-value";
+import minLength from "./validations/min-length";
+import maxLength from "./validations/max-length";
 
 function validationChain(...initialValidationChecks: IValidationCheck[]): IValidationChain {
     const validationChecks: IValidationChecks = {
